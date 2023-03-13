@@ -56,7 +56,7 @@ export class ECSResources extends Construct {
 
     const fileSystem = new FileSystem(this, 'fileSystem', {
       vpc: props.vpc,
-      removalPolicy: RemovalPolicy.SNAPSHOT,
+      removalPolicy: RemovalPolicy.RETAIN,
     });
 
     const accessPoint = new AccessPoint(this, 'accessPoint', {

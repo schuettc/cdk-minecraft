@@ -1,6 +1,6 @@
 const { awscdk } = require('projen');
 const project = new awscdk.AwsCdkTypeScriptApp({
-  cdkVersion: '2.63.0',
+  cdkVersion: '2.68.0',
   defaultReleaseBranch: 'main',
   name: 'cdk-minecraft',
   license: 'Apache-2.0',

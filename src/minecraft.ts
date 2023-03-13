@@ -116,8 +116,8 @@ const app = new App();
 const stackProps = {
   minecraftEdition: process.env.MINECRAFT_EDITION || 'java',
   serverSubDomain: process.env.SERVER_SUBDOMAIN || 'minecraft',
-  domain: process.env.DOMAIN || '',
-  hostedZoneId: process.env.HOSTED_ZONE_ID || '',
+  domain: process.env.DOMAIN || 'example.com',
+  hostedZoneId: process.env.HOSTED_ZONE_ID || 'Z00000000000000000000',
   memorySize: process.env.MEMORY_SIZE || '8192',
   cpuSize: process.env.CPU_SIZE || '4096',
   snsEmail: process.env.SNS_EMAIL || '',
