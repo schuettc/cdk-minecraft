@@ -1,0 +1,1238 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snapshot 1`] = `
+{
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "ECSResourcesCluster24881249": {
+      "Properties": {
+        "ClusterSettings": [
+          {
+            "Name": "containerInsights",
+            "Value": "enabled",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::Cluster",
+    },
+    "ECSResourcesClusterE9B92E39": {
+      "Properties": {
+        "CapacityProviders": [
+          "FARGATE",
+          "FARGATE_SPOT",
+        ],
+        "Cluster": {
+          "Ref": "ECSResourcesCluster24881249",
+        },
+        "DefaultCapacityProviderStrategy": [],
+      },
+      "Type": "AWS::ECS::ClusterCapacityProviderAssociations",
+    },
+    "ECSResourcesFargateService8B5707BB": {
+      "Properties": {
+        "CapacityProviderStrategy": [
+          {
+            "Base": 1,
+            "CapacityProvider": "FARGATE",
+            "Weight": 1,
+          },
+        ],
+        "Cluster": {
+          "Ref": "ECSResourcesCluster24881249",
+        },
+        "DeploymentConfiguration": {
+          "MaximumPercent": 200,
+          "MinimumHealthyPercent": 50,
+        },
+        "DesiredCount": 0,
+        "EnableECSManagedTags": false,
+        "EnableExecuteCommand": true,
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "AssignPublicIp": "ENABLED",
+            "SecurityGroups": [
+              {
+                "Fn::GetAtt": [
+                  "VPCResourcesMinecraftSecurityGroupBCF00E9E",
+                  "GroupId",
+                ],
+              },
+            ],
+            "Subnets": [
+              {
+                "Ref": "VPCResourcesVPCMinecraftPublicSubnet1Subnet700D54D0",
+              },
+              {
+                "Ref": "VPCResourcesVPCMinecraftPublicSubnet2SubnetBB07007C",
+              },
+            ],
+          },
+        },
+        "ServiceName": "MineCraftService",
+        "TaskDefinition": {
+          "Ref": "ECSResourcesTaskDefinition8E540F33",
+        },
+      },
+      "Type": "AWS::ECS::Service",
+    },
+    "ECSResourcesServerPolicy9910A30C": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ecs:*",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Ref": "ECSResourcesTaskDefinition8E540F33",
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "ECSResourcesTaskDefinition8E540F33",
+                      },
+                      ":/*}",
+                    ],
+                  ],
+                },
+                {
+                  "Ref": "ECSResourcesFargateService8B5707BB",
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "ECSResourcesFargateService8B5707BB",
+                      },
+                      ":/*}",
+                    ],
+                  ],
+                },
+                {
+                  "Fn::GetAtt": [
+                    "ECSResourcesCluster24881249",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "ECSResourcesCluster24881249",
+                          "Arn",
+                        ],
+                      },
+                      ":/*}",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "ec2:DescribeNetworkInterfaces",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "SNSResourcessnsTopic94CDD1F4",
+              },
+            },
+            {
+              "Action": [
+                "route53:GetHostedZone",
+                "route53:ChangeResourceRecordSets",
+                "route53:ListResourceRecordSets",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:route53:::hostedzone/",
+                    {
+                      "Ref": "Route53ResourcesSubdomainHostedZoneBCD317E3",
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ECSResourcesServerPolicy9910A30C",
+        "Roles": [
+          {
+            "Ref": "ECSResourcesminecraftTaskRoleD81EB7A3",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ECSResourcesTaskDefinition8E540F33": {
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Environment": [
+              {
+                "Name": "EULA",
+                "Value": "TRUE",
+              },
+              {
+                "Name": "MEMORY",
+                "Value": "8G",
+              },
+            ],
+            "Essential": false,
+            "Image": "itzg/minecraft-server",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "ECSResourcesTaskDefinitionMinecraftServerContainerLogGroupF63AA5B9",
+                },
+                "awslogs-region": {
+                  "Ref": "AWS::Region",
+                },
+                "awslogs-stream-prefix": "minecraft",
+              },
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/data",
+                "ReadOnly": false,
+                "SourceVolume": "minecraft",
+              },
+            ],
+            "Name": "MinecraftServerContainer",
+            "PortMappings": [
+              {
+                "ContainerPort": 25565,
+                "HostPort": 25565,
+                "Protocol": "tcp",
+              },
+            ],
+          },
+          {
+            "Environment": [
+              {
+                "Name": "CLUSTER",
+                "Value": {
+                  "Ref": "ECSResourcesCluster24881249",
+                },
+              },
+              {
+                "Name": "SERVICE",
+                "Value": "MineCraftService",
+              },
+              {
+                "Name": "DNSZONE",
+                "Value": {
+                  "Ref": "Route53ResourcesSubdomainHostedZoneBCD317E3",
+                },
+              },
+              {
+                "Name": "SERVERNAME",
+                "Value": "minecraft.subaud.io",
+              },
+              {
+                "Name": "SNSTOPIC",
+                "Value": {
+                  "Ref": "SNSResourcessnsTopic94CDD1F4",
+                },
+              },
+              {
+                "Name": "STARTUPMIN",
+                "Value": "10",
+              },
+              {
+                "Name": "SHUTDOWNMIN",
+                "Value": "20",
+              },
+            ],
+            "Essential": true,
+            "Image": {
+              "Fn::Sub": "\${AWS::AccountId}.dkr.ecr.\${AWS::Region}.\${AWS::URLSuffix}/cdk-hnb659fds-container-assets-\${AWS::AccountId}-\${AWS::Region}:da696fe458adf84697224da71c6d232edd8990e7abc08407f5c12fb8dc0d8584",
+            },
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "ECSResourcesTaskDefinitionWatchdogContainerLogGroupDD87B6AF",
+                },
+                "awslogs-region": {
+                  "Ref": "AWS::Region",
+                },
+                "awslogs-stream-prefix": "minecraft",
+              },
+            },
+            "Name": "WatchdogContainer",
+          },
+        ],
+        "Cpu": "4096",
+        "ExecutionRoleArn": {
+          "Fn::GetAtt": [
+            "ECSResourcesTaskDefinitionExecutionRoleC415121B",
+            "Arn",
+          ],
+        },
+        "Family": "testECSResourcesTaskDefinitionB010C65F",
+        "Memory": "8192",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": [
+          "FARGATE",
+        ],
+        "RuntimePlatform": {
+          "CpuArchitecture": "ARM64",
+          "OperatingSystemFamily": "LINUX",
+        },
+        "TaskRoleArn": {
+          "Fn::GetAtt": [
+            "ECSResourcesminecraftTaskRoleD81EB7A3",
+            "Arn",
+          ],
+        },
+        "Volumes": [
+          {
+            "EFSVolumeConfiguration": {
+              "AuthorizationConfig": {
+                "AccessPointId": {
+                  "Ref": "ECSResourcesaccessPoint8964BE81",
+                },
+                "IAM": "ENABLED",
+              },
+              "FilesystemId": {
+                "Ref": "ECSResourcesfileSystem699844AB",
+              },
+              "TransitEncryption": "ENABLED",
+            },
+            "Name": "minecraft",
+          },
+        ],
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "ECSResourcesTaskDefinitionExecutionRoleC415121B": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ECSResourcesTaskDefinitionExecutionRoleDefaultPolicy43D38C65": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "ECSResourcesTaskDefinitionMinecraftServerContainerLogGroupF63AA5B9",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ecr:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":repository/",
+                    {
+                      "Fn::Sub": "cdk-hnb659fds-container-assets-\${AWS::AccountId}-\${AWS::Region}",
+                    },
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "ECSResourcesTaskDefinitionWatchdogContainerLogGroupDD87B6AF",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ECSResourcesTaskDefinitionExecutionRoleDefaultPolicy43D38C65",
+        "Roles": [
+          {
+            "Ref": "ECSResourcesTaskDefinitionExecutionRoleC415121B",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ECSResourcesTaskDefinitionMinecraftServerContainerLogGroupF63AA5B9": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 3,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "ECSResourcesTaskDefinitionWatchdogContainerLogGroupDD87B6AF": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 3,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "ECSResourcesaccessPoint8964BE81": {
+      "Properties": {
+        "FileSystemId": {
+          "Ref": "ECSResourcesfileSystem699844AB",
+        },
+        "PosixUser": {
+          "Gid": "1000",
+          "Uid": "1000",
+        },
+        "RootDirectory": {
+          "CreationInfo": {
+            "OwnerGid": "1000",
+            "OwnerUid": "1000",
+            "Permissions": "0750",
+          },
+          "Path": "/minecraft",
+        },
+      },
+      "Type": "AWS::EFS::AccessPoint",
+    },
+    "ECSResourcesfileSystem699844AB": {
+      "DeletionPolicy": "Snapshot",
+      "Properties": {
+        "Encrypted": true,
+        "FileSystemTags": [
+          {
+            "Key": "Name",
+            "Value": "test/ECSResources/fileSystem",
+          },
+        ],
+      },
+      "Type": "AWS::EFS::FileSystem",
+      "UpdateReplacePolicy": "Snapshot",
+    },
+    "ECSResourcesfileSystemEfsMountTarget1D4ECB079": {
+      "Properties": {
+        "FileSystemId": {
+          "Ref": "ECSResourcesfileSystem699844AB",
+        },
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "ECSResourcesfileSystemEfsSecurityGroupE8484359",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": {
+          "Ref": "VPCResourcesVPCMinecraftPublicSubnet1Subnet700D54D0",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "ECSResourcesfileSystemEfsMountTarget24493D11A": {
+      "Properties": {
+        "FileSystemId": {
+          "Ref": "ECSResourcesfileSystem699844AB",
+        },
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "ECSResourcesfileSystemEfsSecurityGroupE8484359",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": {
+          "Ref": "VPCResourcesVPCMinecraftPublicSubnet2SubnetBB07007C",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "ECSResourcesfileSystemEfsSecurityGroupE8484359": {
+      "Properties": {
+        "GroupDescription": "test/ECSResources/fileSystem/EfsSecurityGroup",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "test/ECSResources/fileSystem",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VPCResourcesVPC89517325",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "ECSResourcesfileSystemEfsSecurityGroupfromtestVPCResourcesMinecraftSecurityGroup56DB8C41204995048668": {
+      "Properties": {
+        "Description": "from testVPCResourcesMinecraftSecurityGroup56DB8C41:2049",
+        "FromPort": 2049,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "ECSResourcesfileSystemEfsSecurityGroupE8484359",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "VPCResourcesMinecraftSecurityGroupBCF00E9E",
+            "GroupId",
+          ],
+        },
+        "ToPort": 2049,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "ECSResourcesminecraftTaskRoleD81EB7A3": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": [
+                    "elasticfilesystem:ClientMount",
+                    "elasticfilesystem:ClientWrite",
+                    "elasticfilesystem:DescribeFileSystems",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "mineCraftTaskPolicy",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ECSResourcesminecraftTaskRoleDefaultPolicyF9DB1A20": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "ssmmessages:CreateControlChannel",
+                "ssmmessages:CreateDataChannel",
+                "ssmmessages:OpenControlChannel",
+                "ssmmessages:OpenDataChannel",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": "logs:DescribeLogGroups",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ECSResourcesminecraftTaskRoleDefaultPolicyF9DB1A20",
+        "Roles": [
+          {
+            "Ref": "ECSResourcesminecraftTaskRoleD81EB7A3",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "LambdaResourcesLambdaRoleC5A166D9": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": "ecs:*",
+                  "Effect": "Allow",
+                  "Resource": [
+                    {
+                      "Fn::Join": [
+                        "",
+                        [
+                          {
+                            "Ref": "ECSResourcesFargateService8B5707BB",
+                          },
+                          "/*",
+                        ],
+                      ],
+                    },
+                    {
+                      "Ref": "ECSResourcesFargateService8B5707BB",
+                    },
+                    {
+                      "Fn::Join": [
+                        "",
+                        [
+                          {
+                            "Fn::GetAtt": [
+                              "ECSResourcesCluster24881249",
+                              "Arn",
+                            ],
+                          },
+                          "/*",
+                        ],
+                      ],
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "ECSResourcesCluster24881249",
+                        "Arn",
+                      ],
+                    },
+                  ],
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "ecsPolicy",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LambdaResourcesLauncherLambda44ADD6E0": {
+      "DependsOn": [
+        "LambdaResourcesLambdaRoleC5A166D9",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "557e18a763406c4a93952c9d881d20c82f493d7477f2ba21788306905e8d6c70.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "CLUSTER": {
+              "Ref": "ECSResourcesCluster24881249",
+            },
+            "REGION": {
+              "Ref": "AWS::Region",
+            },
+            "SERVICE": {
+              "Fn::GetAtt": [
+                "ECSResourcesFargateService8B5707BB",
+                "Name",
+              ],
+            },
+          },
+        },
+        "Handler": "index.lambda_handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "LambdaResourcesLambdaRoleC5A166D9",
+            "Arn",
+          ],
+        },
+        "Runtime": "python3.9",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "LambdaResourcesLauncherLambdaInvokeLambda22951475": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "LambdaResourcesLauncherLambda44ADD6E0",
+            "Arn",
+          ],
+        },
+        "Principal": {
+          "Fn::Join": [
+            "",
+            [
+              "logs.",
+              {
+                "Ref": "AWS::Region",
+              },
+              ".amazonaws.com",
+            ],
+          ],
+        },
+        "SourceAccount": {
+          "Ref": "AWS::AccountId",
+        },
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "Route53ResourcesQueryLogGroup70152C9B",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "LambdaResourcesLauncherLambdaLogRetention95D95660": {
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "",
+            [
+              "/aws/lambda/",
+              {
+                "Ref": "LambdaResourcesLauncherLambda44ADD6E0",
+              },
+            ],
+          ],
+        },
+        "RetentionInDays": 7,
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::LogRetention",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": {
+      "DependsOn": [
+        "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+        "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "e45ee2082d227db1b6f0292696ce5ce2b061c105d15efb341925ca040d1feb68.zip",
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "logs:PutRetentionPolicy",
+                "logs:DeleteRetentionPolicy",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+        "Roles": [
+          {
+            "Ref": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "Route53ResourcesQueryLogGroup70152C9B": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "LogGroupName": "/aws/route53/minecraft.subaud.io",
+        "RetentionInDays": 3,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "Route53ResourcesQueryLogGroupSubscriptionFilterBF700528": {
+      "Properties": {
+        "DestinationArn": {
+          "Fn::GetAtt": [
+            "LambdaResourcesLauncherLambda44ADD6E0",
+            "Arn",
+          ],
+        },
+        "FilterPattern": ""minecraft.subaud.io"",
+        "LogGroupName": {
+          "Ref": "Route53ResourcesQueryLogGroup70152C9B",
+        },
+      },
+      "Type": "AWS::Logs::SubscriptionFilter",
+    },
+    "Route53ResourcesQueryLogGroupSubscriptionFilterCanInvokeLambda1BEF8D47": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "LambdaResourcesLauncherLambda44ADD6E0",
+            "Arn",
+          ],
+        },
+        "Principal": "logs.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "Route53ResourcesQueryLogGroup70152C9B",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "Route53ResourcesResourcePolicyC75BB00E": {
+      "Properties": {
+        "PolicyDocument": {
+          "Fn::Join": [
+            "",
+            [
+              "{"Statement":[{"Action":["logs:CreateLogStream","logs:PutLogEvents"],"Effect":"Allow","Principal":{"Service":"route53.amazonaws.com"},"Resource":"",
+              {
+                "Fn::GetAtt": [
+                  "Route53ResourcesQueryLogGroup70152C9B",
+                  "Arn",
+                ],
+              },
+              ""}],"Version":"2012-10-17"}",
+            ],
+          ],
+        },
+        "PolicyName": "testRoute53ResourcesResourcePolicy41CD3C96",
+      },
+      "Type": "AWS::Logs::ResourcePolicy",
+    },
+    "Route53ResourcesSubdomainHostedZoneBCD317E3": {
+      "Properties": {
+        "Name": "minecraft.subaud.io.",
+        "QueryLoggingConfig": {
+          "CloudWatchLogsLogGroupArn": {
+            "Fn::GetAtt": [
+              "Route53ResourcesQueryLogGroup70152C9B",
+              "Arn",
+            ],
+          },
+        },
+      },
+      "Type": "AWS::Route53::HostedZone",
+    },
+    "Route53ResourcesSubdomainNsRecordF6424698": {
+      "Properties": {
+        "HostedZoneId": "Z05471101T1IJ1NNECF75",
+        "Name": "minecraft.subaud.io.",
+        "ResourceRecords": {
+          "Fn::GetAtt": [
+            "Route53ResourcesSubdomainHostedZoneBCD317E3",
+            "NameServers",
+          ],
+        },
+        "TTL": "1800",
+        "Type": "NS",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
+    "Route53ResourcesclientSiteARecordCF9204D4": {
+      "Properties": {
+        "HostedZoneId": {
+          "Ref": "Route53ResourcesSubdomainHostedZoneBCD317E3",
+        },
+        "Name": "minecraft.subaud.io.",
+        "ResourceRecords": [
+          "192.168.1.1",
+        ],
+        "TTL": "30",
+        "Type": "A",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
+    "SNSResourcesemailSubscriptionD605DD46": {
+      "Properties": {
+        "Endpoint": "court@subaud.io",
+        "Protocol": "email",
+        "TopicArn": {
+          "Ref": "SNSResourcessnsTopic94CDD1F4",
+        },
+      },
+      "Type": "AWS::SNS::Subscription",
+    },
+    "SNSResourcessnsTopic94CDD1F4": {
+      "Type": "AWS::SNS::Topic",
+    },
+    "VPCResourcesMinecraftSecurityGroupBCF00E9E": {
+      "Properties": {
+        "GroupDescription": "Security Group for Minecraft Server",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "from 0.0.0.0/0:25565",
+            "FromPort": 25565,
+            "IpProtocol": "tcp",
+            "ToPort": 25565,
+          },
+        ],
+        "VpcId": {
+          "Ref": "VPCResourcesVPC89517325",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "VPCResourcesVPC89517325": {
+      "Properties": {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "test/VPCResources/VPC",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::VPC",
+    },
+    "VPCResourcesVPCIGW0870CE93": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "test/VPCResources/VPC",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::InternetGateway",
+    },
+    "VPCResourcesVPCMinecraftPublicSubnet1DefaultRoute4ED436EE": {
+      "DependsOn": [
+        "VPCResourcesVPCVPCGW8CE4D94B",
+      ],
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "VPCResourcesVPCIGW0870CE93",
+        },
+        "RouteTableId": {
+          "Ref": "VPCResourcesVPCMinecraftPublicSubnet1RouteTable820E2B03",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VPCResourcesVPCMinecraftPublicSubnet1RouteTable820E2B03": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "test/VPCResources/VPC/MinecraftPublicSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VPCResourcesVPC89517325",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VPCResourcesVPCMinecraftPublicSubnet1RouteTableAssociationCDE17490": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "VPCResourcesVPCMinecraftPublicSubnet1RouteTable820E2B03",
+        },
+        "SubnetId": {
+          "Ref": "VPCResourcesVPCMinecraftPublicSubnet1Subnet700D54D0",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VPCResourcesVPCMinecraftPublicSubnet1Subnet700D54D0": {
+      "Properties": {
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "CidrBlock": "10.0.0.0/24",
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "MinecraftPublic",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          {
+            "Key": "Name",
+            "Value": "test/VPCResources/VPC/MinecraftPublicSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VPCResourcesVPC89517325",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VPCResourcesVPCMinecraftPublicSubnet2DefaultRoute87BB5CF2": {
+      "DependsOn": [
+        "VPCResourcesVPCVPCGW8CE4D94B",
+      ],
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "VPCResourcesVPCIGW0870CE93",
+        },
+        "RouteTableId": {
+          "Ref": "VPCResourcesVPCMinecraftPublicSubnet2RouteTable89D9A250",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VPCResourcesVPCMinecraftPublicSubnet2RouteTable89D9A250": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "test/VPCResources/VPC/MinecraftPublicSubnet2",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VPCResourcesVPC89517325",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VPCResourcesVPCMinecraftPublicSubnet2RouteTableAssociation4F784DE7": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "VPCResourcesVPCMinecraftPublicSubnet2RouteTable89D9A250",
+        },
+        "SubnetId": {
+          "Ref": "VPCResourcesVPCMinecraftPublicSubnet2SubnetBB07007C",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VPCResourcesVPCMinecraftPublicSubnet2SubnetBB07007C": {
+      "Properties": {
+        "AvailabilityZone": {
+          "Fn::Select": [
+            1,
+            {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "CidrBlock": "10.0.1.0/24",
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "MinecraftPublic",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          {
+            "Key": "Name",
+            "Value": "test/VPCResources/VPC/MinecraftPublicSubnet2",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VPCResourcesVPC89517325",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VPCResourcesVPCVPCGW8CE4D94B": {
+      "Properties": {
+        "InternetGatewayId": {
+          "Ref": "VPCResourcesVPCIGW0870CE93",
+        },
+        "VpcId": {
+          "Ref": "VPCResourcesVPC89517325",
+        },
+      },
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;

@@ -123,6 +123,14 @@
         }
       ]
     },
+    "launch": {
+      "name": "launch",
+      "steps": [
+        {
+          "exec": "yarn && yarn projen && yarn build && yarn cdk bootstrap && yarn cdk deploy"
+        }
+      ]
+    },
     "package": {
       "name": "package",
       "description": "Creates the distribution package"
