@@ -830,6 +830,9 @@ exports[`Snapshot 1`] = `
       "UpdateReplacePolicy": "Delete",
     },
     "Route53ResourcesQueryLogGroupSubscriptionFilterBF700528": {
+      "DependsOn": [
+        "Route53ResourcesQueryLogGroupSubscriptionFilterCanInvokeLambda1BEF8D47",
+      ],
       "Properties": {
         "DestinationArn": {
           "Fn::GetAtt": [
@@ -2007,6 +2010,9 @@ exports[`Snapshot 2`] = `
       "UpdateReplacePolicy": "Delete",
     },
     "Route53ResourcesQueryLogGroupSubscriptionFilterBF700528": {
+      "DependsOn": [
+        "Route53ResourcesQueryLogGroupSubscriptionFilterCanInvokeLambda1BEF8D47",
+      ],
       "Properties": {
         "DestinationArn": {
           "Fn::GetAtt": [
@@ -3246,6 +3252,9 @@ exports[`Snapshot 3`] = `
       "UpdateReplacePolicy": "Delete",
     },
     "Route53ResourcesQueryLogGroupSubscriptionFilterBF700528": {
+      "DependsOn": [
+        "Route53ResourcesQueryLogGroupSubscriptionFilterCanInvokeLambda1BEF8D47",
+      ],
       "Properties": {
         "DestinationArn": {
           "Fn::GetAtt": [
@@ -4476,6 +4485,9 @@ exports[`Snapshot 4`] = `
       "UpdateReplacePolicy": "Delete",
     },
     "Route53ResourcesQueryLogGroupSubscriptionFilterBF700528": {
+      "DependsOn": [
+        "Route53ResourcesQueryLogGroupSubscriptionFilterCanInvokeLambda1BEF8D47",
+      ],
       "Properties": {
         "DestinationArn": {
           "Fn::GetAtt": [
