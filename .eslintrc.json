@@ -224,7 +224,6 @@
   "overrides": [
     {
       "files": [
-        "site/src/**/*.tsx",
         "src/resources/**/*.ts"
       ],
       "rules": {
@@ -235,8 +234,7 @@
     {
       "files": [
         "src/resources/**/*.ts",
-        "src/*.ts",
-        "site/src/**/*.tsx"
+        "src/*.ts"
       ],
       "rules": {
         "@typescript-eslint/no-require-imports": "off",

@@ -11,6 +11,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   authorAddress: 'https://subaud.io',
   copyrightOwner: 'Court Schuett',
   appEntrypoint: 'minecraft.ts',
+  jest: false,
   depsUpgradeOptions: {
     ignoreProjen: false,
     workflowOptions: {
@@ -43,12 +44,11 @@ project.addTask('launch', {
 
 project.tsconfigDev.file.addOverride('include', [
   'src/**/*.ts',
-  'site/src/**/*.tsx',
   './.projenrc.ts',
 ]);
 
 project.eslint.addOverride({
-  files: ['site/src/**/*.tsx', 'src/resources/**/*.ts'],
+  files: ['src/resources/**/*.ts'],
   rules: {
     'indent': 'off',
     '@typescript-eslint/indent': 'off',
@@ -56,7 +56,7 @@ project.eslint.addOverride({
 });
 
 project.eslint.addOverride({
-  files: ['src/resources/**/*.ts', 'src/*.ts', 'site/src/**/*.tsx'],
+  files: ['src/resources/**/*.ts', 'src/*.ts'],
   rules: {
     '@typescript-eslint/no-require-imports': 'off',
     'import/no-extraneous-dependencies': 'off',
