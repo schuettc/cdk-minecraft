@@ -1221,7 +1221,7 @@ available-typed-arrays@^1.0.7:
   dependencies:
     possible-typed-array-names "^1.0.0"
 
-aws-cdk-lib@^2.68.0:
+aws-cdk-lib@^2.134.0:
   version "2.138.0"
   resolved "https://registry.yarnpkg.com/aws-cdk-lib/-/aws-cdk-lib-2.138.0.tgz#75df61f9836cd7635da6cc090ac198b1e13b7acf"
   integrity sha512-BdLOd6Fkl/7PH8RahRbhYQf3zRFCxVtOdkKOAZHHqtaNkmTyfkUGMXyzyQ4rIHvR8EOy1C1x5CAufqoZuJM0gA==
@@ -1241,7 +1241,7 @@ aws-cdk-lib@^2.68.0:
     table "^6.8.2"
     yaml "1.10.2"
 
-aws-cdk@^2.68.0:
+aws-cdk@^2.134.0:
   version "2.138.0"
   resolved "https://registry.yarnpkg.com/aws-cdk/-/aws-cdk-2.138.0.tgz#9b6f3d631a31e224b518fad873aceed3f2a8f0fc"
   integrity sha512-48xvfEaiM07RB+p05RHqRAVtKcxkGzXnwdTo765Ba0rUFK2ZQ9leykVeBDvdCj9u0eMv2fCRspP/wQxPOU2H/g==
